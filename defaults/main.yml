@@ -5,12 +5,12 @@ jupyterhub_username: jupyterhub
 jupyterhub_password: random
 
 # Dependencies variables
-wheel_version: 0.37.1
-jupyterhub_version: 5.0.0
-jupyterlab_version: 4.2.4
-notebook_version: 7.2.1
-markupsafe_version: 2.0.1
-ipywidgets_version: 7.7.0
+wheel_version: 0.45.1
+jupyterhub_version: 5.2.1
+jupyterlab_version: 4.3.4
+notebook_version: 7.3.2
+markupsafe_version: 3.0.2
+ipywidgets_version: 8.1.5
 
 # Jupyterhub configuration variables
 jupyterhub_virtualenv: "{{ export_dir }}/jupyterhub"
