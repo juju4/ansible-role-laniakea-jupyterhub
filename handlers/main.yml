@@ -4,14 +4,20 @@
 - name: Systemd daemon-reload
   ansible.builtin.systemd:
     daemon_reload: true
+  when:
+    - not is_container|bool
 
 - name: Restart jupyterhub
   ansible.builtin.systemd:
     name: jupyterhub.service
     state: restarted
     enabled: true
+  when:
+    - not is_container|bool
 
 - name: Restart nginx
   ansible.builtin.service:
     name: nginx
     state: restarted
+  when:
+    - not is_container|bool
