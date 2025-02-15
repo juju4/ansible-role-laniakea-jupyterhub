@@ -8,6 +8,32 @@
     group: "{{ jupyterhub_username }}"
     mode: '0700'
 
+- name: Ensure cookie secret file has right permissions
+  ansible.builtin.file:
+    path: "{{ jupyterhub_config_dir }}/jupyterhub_cookie_secret"
+    state: touch
+    owner: "{{ jupyterhub_username }}"
+    group: "{{ jupyterhub_username }}"
+    mode: '0600'
+
+- name: Create jupyterhub log directory
+  ansible.builtin.file:
+    path: "{{ jupyterhub_log_dir }}"
+    state: directory
+    owner: "{{ jupyterhub_username }}"
+    group: "{{ jupyterhub_username }}"
+    mode: '0700'
+  when:
+    - jupyterhub_log_dir != '/var/log'
+
+- name: Create jupyterhub notebooks directory (for users)
+  ansible.builtin.file:
+    path: "{{ notebooks_dir }}"
+    state: directory
+    owner: "{{ jupyterhub_username }}"
+    group: "{{ jupyterhub_username }}"
+    mode: '0711'
+
 - name: Template JupyterHub configuration file
   ansible.builtin.template:
     dest: "{{ jupyterhub_config_file }}"
