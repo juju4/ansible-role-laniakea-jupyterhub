@@ -4,8 +4,8 @@ export_dir: /export
 jupyterhub_username: jupyterhub
 jupyterhub_password: random
 
-# jupyterhub_service_user: root
-jupyterhub_service_user: jupyterhub
+jupyterhub_service_user: root
+# jupyterhub_service_user: jupyterhub
 
 # Dependencies variables
 wheel_version: 0.45.1
