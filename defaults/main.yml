@@ -58,6 +58,20 @@ jupyter_extra_pip: []
 # This will prevent any new pip module install or network access unless proxy available in below range
 jupyterhub_systemd_ipaddressallow: 'localhost link-local multicast 10.0.0.0/8 192.168.0.0/16'
 
+jupyterhub_oauthenticator_enable: false
+# jupyterhub_oauthenticator_class: "generic-oauth"
+# jupyterhub_oauthenticator_class: "GitHubOAuthenticator"
+jupyterhub_oauthenticator_callback_url: "https://{host}/hub/oauth_callback"
+jupyterhub_oauthenticator_client_id:
+jupyterhub_oauthenticator_client_secret:
+jupyterhub_oauthenticator_login_service:
+jupyterhub_oauthenticator_authorize_url:
+jupyterhub_oauthenticator_userdata_url:
+jupyterhub_oauthenticator_token_url:
+jupyterhub_oauthenticator_username_claim:
+jupyterhub_oauthenticator_scope: ["openid", "email", "groups"]
+
 # Test variables
 role_debug: false
+jupyterhub_no_log: true
 is_container: false

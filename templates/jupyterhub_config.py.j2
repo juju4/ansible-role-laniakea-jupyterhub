@@ -47,3 +47,28 @@ c.JupyterHub.bind_url = 'http://127.0.0.1:8000{{ jupyterhub_relative_url }}'
 c.Authenticator.admin_users = { {{ admin_users | map('to_json') | join(', ') }} }
 
 c.Authenticator.allow_all = True
+{% if jupyterhub_oauthenticator_enable | bool %}
+
+# https://oauthenticator.readthedocs.io/en/latest/tutorials/general-setup.html
+# https://github.com/jupyterhub/oauthenticator/issues/193
+{%     if jupyterhub_oauthenticator_class == "generic-oauth" %}
+# https://oauthenticator.readthedocs.io/en/latest/how-to/writing-an-oauthenticator.html
+c.JupyterHub.authenticator_class = "{{ jupyterhub_oauthenticator_class }}"
+c.GenericOAuthenticator.oauth_callback_url = '{{ jupyterhub_oauthenticator_callback_url }}'
+c.GenericOAuthenticator.client_id = '{{ jupyterhub_oauthenticator_client_id }}'
+c.GenericOAuthenticator.client_secret = '{{ jupyterhub_oauthenticator_client_secret }}'
+c.GenericOAuthenticator.login_service = '{{ jupyterhub_oauthenticator_login_service }}'
+c.GenericOAuthenticator.authorize_url = '{{ jupyterhub_oauthenticator_authorize_url }}'
+c.GenericOAuthenticator.userdata_url = '{{ jupyterhub_oauthenticator_userdata_url }}'
+c.GenericOAuthenticator.token_url = '{{ jupyterhub_oauthenticator_token_url }}'
+c.GenericOAuthenticator.username_claim = '{{ jupyterhub_oauthenticator_username_claim }}'
+c.GenericOAuthenticator.scope = {{ jupyterhub_oauthenticator_scope | string }}
+{%     elif jupyterhub_oauthenticator_class == "GitHubOAuthenticator" %}
+# https://oauthenticator.readthedocs.io/en/latest/reference/api/gen/oauthenticator.github.html
+from oauthenticator.github import GitHubOAuthenticator
+c.JupyterHub.authenticator_class = GitHubOAuthenticator
+c.GitHubOAuthenticator.oauth_callback_url = '{{ jupyterhub_oauthenticator_callback_url }}'
+c.GitHubOAuthenticator.client_id = '{{ jupyterhub_oauthenticator_client_id }}'
+c.GitHubOAuthenticator.client_secret = '{{ jupyterhub_oauthenticator_client_secret }}'
+{%     endif %}
+{% endif %}
