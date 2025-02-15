@@ -13,6 +13,15 @@
     - systemd
     - "{{ jupyter_extra_pkgs }}"
 
+- name: Ensure python virtualenv dir is writable
+  ansible.builtin.file:
+    path: "{{ jupyterhub_virtualenv }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ jupyterhub_service_user }}"
+  when:
+    - jupyterhub_service_user != root
+
 - name: Create python virtualenv with required dependencies
   ansible.builtin.pip:
     name:
@@ -26,7 +35,7 @@
       - "{% if jupyterhub_service_user != 'root' %}jupyterhub-systemdspawner{% else %}{{ omit }}{% endif %}"
     virtualenv: "{{ jupyterhub_virtualenv }}"
   become: true
-  become_user: "{{ jupyterhub_username }}"
+  become_user: "{{ jupyterhub_service_user }}"
 
 - name: Set permissions for python virtualenv
   ansible.builtin.file:
