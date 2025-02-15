@@ -28,3 +28,5 @@
 
 - name: Install and configure nginx
   ansible.builtin.include_tasks: nginx.yml
+  when:
+    - jupyterhub_nginx_enable | bool

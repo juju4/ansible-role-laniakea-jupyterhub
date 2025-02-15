@@ -1,5 +1,10 @@
+{{ ansible_managed | comment }}
+
+# Configuration file for jupyterhub.
+
 import os, shutil
 
+{% if jupyterhub_service_user == 'root' %}
 # Set spawned jupyterhub working directory outside of home
 # https://github.com/jupyterhub/jupyterhub/issues/314
 from jupyterhub.spawner import LocalProcessSpawner
@@ -8,6 +13,11 @@ class MySpawner(LocalProcessSpawner):
         return f'{{ notebooks_dir }}/{self.user.name}'
 
 c.JupyterHub.spawner_class = MySpawner
+c.Spawner.storage = '{{ export_dir }}/jupyterhub/users'
+{% else %}
+# requires https://github.com/jupyterhub/systemdspawner
+c.JupyterHub.spawner_class = "systemd"
+{% endif %}
 
 # Automatically create user new default working directory if it doesn't exist
 def userdata_hook(spawner, auth_state):
@@ -18,8 +28,21 @@ def userdata_hook(spawner, auth_state):
         shutil.chown(new_user_home, username, username)
 
 c.Spawner.auth_state_hook = userdata_hook
+c.JupyterHub.cleanup_proxy = True
+
+c.JupyterHub.cookie_secret_file = '{{ jupyterhub_config_dir }}/jupyterhub_cookie_secret'
+c.JupyterHub.db_url = 'sqlite://{{ jupyterhub_config_dir }}/jupyterhub.sqlite'
+c.JupyterHub.extra_log_file = '{{ jupyterhub_log_dir }}/jupyter.log'
+# c.JupyterHub.pid_file = '/run/jupyterhub/jupyterhub.pid'
+c.JupyterHub.pid_file = '{{ jupyterhub_config_dir }}/jupyterhub.pid'
+c.ConfigurableHTTPProxy.pid_file = '{{ jupyterhub_config_dir }}/jupyterhub-proxy.pid'
 
 c.Spawner.default_url = '/lab'
+# Enable debug-logging of the single-user server
+c.Spawner.debug = True
+# Enable debug-logging of the single-user server
+c.LocalProcessSpawner.debug = True
+
 c.JupyterHub.bind_url = 'http://127.0.0.1:8000{{ jupyterhub_relative_url }}'
 c.Authenticator.admin_users = { {{ admin_users | map('to_json') | join(', ') }} }
 

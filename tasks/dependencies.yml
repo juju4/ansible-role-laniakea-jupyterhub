@@ -2,14 +2,16 @@
 
 - name: Install dependencies
   ansible.builtin.apt:
-    name:
-      - nodejs
-      - npm
-      - python3-pip
-      - python3-virtualenv
-      - systemd
+    name: "{{ item }}"
     state: present
     update_cache: true
+  loop:
+    - nodejs
+    - npm
+    - python3-pip
+    - python3-virtualenv
+    - systemd
+    - "{{ jupyter_extra_pkgs }}"
 
 - name: Create python virtualenv with required dependencies
   ansible.builtin.pip:
@@ -21,7 +23,10 @@
       # https://techoverflow.net/2022/04/07/how-to-fix-jupyter-lab-importerror-cannot-import-name-soft_unicode-from-markupsafe/
       - markupsafe=={{ markupsafe_version }}
       - ipywidgets=={{ ipywidgets_version }}
+      - "{% if jupyterhub_service_user != 'root' %}jupyterhub-systemdspawner{% else %}{{ omit }}{% endif %}"
     virtualenv: "{{ jupyterhub_virtualenv }}"
+  become: true
+  become_user: "{{ jupyterhub_username }}"
 
 - name: Set permissions for python virtualenv
   ansible.builtin.file:

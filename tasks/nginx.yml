@@ -14,7 +14,7 @@
 - name: Configure reverse proxy for JupyterHub
   ansible.builtin.template:
     dest: "{{ nginx_conf_dir }}/sites-available/{{ jupyterhub_nginx_site_file }}"
-    src: jupyterhub_nginx.j2
+    src: "{{ jupyterhub_nginx_template }}"
     mode: '0644'
   notify: Restart nginx
 
