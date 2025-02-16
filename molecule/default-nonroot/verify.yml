@@ -55,6 +55,15 @@
         that:
           - bin1.stat.exists and bin1.stat.size != 0 and bin1.stat.mode == '0755'
 
+    - name: Check all processes
+      ansible.builtin.command: ps aux
+      changed_when: false
+      register: psa
+    - name: Debug | ps aux output
+      ansible.builtin.debug:
+        var: psa
+        verbosity: 1
+
     - name: Ensure processes are running
       ansible.builtin.command:
         cmd: "pgrep -u {{ item.u }} {{ item.p }}"
@@ -72,15 +81,6 @@
       loop: "{{ ps.results }}"
       when:
         - not is_container|bool
-
-    - name: Check all processes
-      ansible.builtin.command: ps aux
-      changed_when: false
-      register: psa
-    - name: Debug | ps aux output
-      ansible.builtin.debug:
-        var: psa
-        verbosity: 1
 
     - name: Ensure ports are listening
       ansible.builtin.wait_for:
