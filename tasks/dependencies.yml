@@ -32,10 +32,19 @@
       # https://techoverflow.net/2022/04/07/how-to-fix-jupyter-lab-importerror-cannot-import-name-soft_unicode-from-markupsafe/
       - markupsafe=={{ markupsafe_version }}
       - ipywidgets=={{ ipywidgets_version }}
-      - "{% if jupyterhub_service_user != 'root' %}jupyterhub-systemdspawner{% else %}{{ omit }}{% endif %}"
     virtualenv: "{{ jupyterhub_virtualenv }}"
   become: true
   become_user: "{{ jupyterhub_service_user }}"
+
+- name: Conditional python virtualenv dependencies - non-root
+  ansible.builtin.pip:
+    name:
+      - jupyterhub-systemdspawner
+    virtualenv: "{{ jupyterhub_virtualenv }}"
+  become: true
+  become_user: "{{ jupyterhub_service_user }}"
+  when:
+    - jupyterhub_service_user != 'root'
 
 - name: Set permissions for python virtualenv
   ansible.builtin.file:
