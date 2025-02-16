@@ -6,7 +6,8 @@
     test_pkg: nodejs
     exec_file: /export/jupyterhub/bin/jupyter
     processes:
-      - { u: jupyterhub, p: python }
+      # - { u: jupyterhub, p: python }
+      - { u: jupyterhub, p: jupyterhub }
     ports:
       - { h: localhost, p: 8000 }
     is_container: false
