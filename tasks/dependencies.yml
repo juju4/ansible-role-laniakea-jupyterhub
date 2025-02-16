@@ -20,7 +20,7 @@
     mode: '0755'
     owner: "{{ jupyterhub_service_user }}"
   when:
-    - jupyterhub_service_user != root
+    - jupyterhub_service_user != 'root'
 
 - name: Create python virtualenv with required dependencies
   ansible.builtin.pip:
